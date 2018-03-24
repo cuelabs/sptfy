@@ -2,13 +2,8 @@ package album
 
 import "net/url"
 
-type Album struct {
-	Name string `json:"name"`
-	Uri  string `json:"uri"`
-	Url url.URL `json:"url"`
-}
+type SptfyAlbum struct {i
+	Uri  *string `json:"uri"`
 
-func (a *Album) getName(s string) (string, error) {
-	return a.Name, nil
+        Id   *string `json:"id"`
 }
-
