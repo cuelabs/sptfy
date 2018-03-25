@@ -13,11 +13,13 @@ type SptfyTrack struct {
 	Name        *string               `json:"name"`
 	Artists     []*artist.SptfyArtist `json:"artists"`
 	Album       *album.SptfyAlbum     `json:"album"`
+	IsPlayable  bool `json:"is_playable"`
 	Id          *string               `json:"id"`
 	Uri         *string               `json:"uri"`
-	Href        url.URL               `json:"href"`
+	Href        *url.URL               `json:"href"`
 }
 
+// Display web API endpoint containing full entry for Spotify track
 func (t *SptfyTrack) Details() (*[]byte, error) {
 	resp, err := http.Get(t.Href.String())
 	if err != nil {
