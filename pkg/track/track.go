@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"errors"
+	"fmt"
 )
 
 type SptfyTrack struct {
@@ -22,13 +24,24 @@ type SptfyTrack struct {
 // Display web API endpoint containing full entry for Spotify track
 func (t *SptfyTrack) Details() (*[]byte, error) {
 	resp, err := http.Get(t.Href.String())
+	defer resp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
 	c, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
 	return &c, nil
+}
+
+func (t *SptfyTrack) Play() error {
+	resp, err := http.Get(t.PlaybackUrl.String())
+	c, err := ioutil.ReadAll(resp.Body)
+	defer resp.Body.Close()
+	if err == nil {
+		// implement
+		fmt.Println(c)
+		return errors.New("implement")
+	}
 }
