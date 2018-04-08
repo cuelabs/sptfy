@@ -1,0 +1,71 @@
+syntax = "proto3";
+package sptfyapi;
+
+service TrackSearchService {
+  rpc SearchTrack(TrackSearchRequest) returns
+(TrackSearchResponse);
+}
+
+message TrackSearchRequest {
+  string query = 1;
+  uint32 pagesize = 2;
+  uint32 pagenum = 3;
+}
+
+message TrackSearchResponse {
+  repeated TrackResult results = 1;
+}
+
+message TrackResult {
+  string suri = 1;
+  string name = 2;
+  string artist = 3;
+  string album = 4;
+  string spftytag = 5;
+  bytes metadata = 6;
+}
+
+service AlbumSearchService {
+  rpc SearchAlbum(AlbumSearchRequest) returns
+(AlbumSearchResponse);
+}
+
+message AlbumSearchRequest {
+  string query = 1;
+  uint32 pagesize = 2;
+  uint32 pagenum = 3;
+}
+
+message AlbumSearchResponse {
+  repeated ArtistResult results = 1;
+}
+
+message AlbumResult {
+  string suri = 1;
+  string name = 2;
+  string artist = 3;
+  string sptfytag = 4;
+  bytes metadata = 5;
+}
+
+service ArtistSearchService {
+  rpc SearchArtist(ArtistSearchRequest) returns
+(AlbumSearchResponse);
+}
+
+message ArtistSearchRequest {
+  string query = 1;
+  uint32 pagesize = 2;
+  uint32 pagenum = 3;
+}
+
+message ArtistSearchResponse {
+  repeated ArtistResult results = 1;
+}
+
+message ArtistResult {
+  string suri = 1;
+  string name = 2;
+  string sptytag = 3;
+  bytes metadata = 4;
+}
