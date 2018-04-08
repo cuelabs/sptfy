@@ -7,7 +7,6 @@ import (
 	"github.com/cuelabs/sptfy/internal/models"
 	"log"
 	"github.com/gorilla/mux"
-	"context"
 )
 
 type Global struct {
@@ -18,8 +17,8 @@ type Global struct {
 func newRouter(g *Global) *mux.Router {
 	r := mux.NewRouter().StrictSlash(true)
 	r.Handle(pb.TrackSearchServicePathPrefix, searchTrackHandler(g))
-	r.Handle(pb.ArtistSearchServicePathPrefix, searchArtistHandler(g))
-	r.Handle(pb.AlbumSearchServicePathPrefix, searchAlbumHandler(g))
+	//r.Handle(pb.ArtistSearchServicePathPrefix, searchArtistHandler(g))
+	//r.Handle(pb.AlbumSearchServicePathPrefix, searchAlbumHandler(g))
 	return r
 }
 
@@ -35,4 +34,8 @@ func main() {
 
 	r := newRouter(globals)
 	http.ListenAndServe("10102", r)
+}
+
+func searchTrackHandler() http.Handler {
+	return pb.NewTrackSearchServiceServer()
 }
