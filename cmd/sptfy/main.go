@@ -34,6 +34,7 @@ type Environment struct {
 	auth    Auth
 	envvars Ennvars
 	log     *log.Logger
+	client http.Client
 }
 
 func (a *Auth) Token(*oauth2.Token, error) {
@@ -41,6 +42,8 @@ func (a *Auth) Token(*oauth2.Token, error) {
 
 	}
 }
+
+func (a *Auth)
 
 var env Environment
 
@@ -88,6 +91,9 @@ func main() {
 
 	tag := playCmd.String("tag", "", "Playback item with sptfy tag. (Required)")
 
+	// check for access_token at ~/.sptfy/token.json
+	// if it exists
+
 	if len(os.Args) < 2 {
 		flag.Parse()
 		if !(*info || *auth) {
@@ -121,8 +127,17 @@ func main() {
 			searchCmd.PrintDefaults()
 			os.Exit(1)
 		}
-		searchUrl := url.URL{Scheme:
-			}
+		switch *searchType {
+		case "":
+			query := fmt.Sprintf ("/?")
+			req := http.NewRequest("GET", url.URL{
+				Scheme: "https",
+				Opaque: "api."
+			})
+			env.client.
+		}
+
+
 	}
 
 	if playCmd.Parsed() {
