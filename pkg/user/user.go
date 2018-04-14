@@ -13,4 +13,11 @@ type SptfyUser struct {
 	Href        url.URL                   `json:"href"`
 }
 
+type SpotifyUserInfo struct {
+	DisplayName string
+	LoginEmail string
+	NowPlaying string
+}
+
+
 //func (u *SptfyUser) Playlists(n int) ([]*playlist.SptfyPlaylist, error) {}
