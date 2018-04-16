@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	//"golang.org/x/crypto/ssh/terminal"
-	// "github.com/cuelabs/sptfy/pkg/user"
+	"github.com/cuelabs/sptfy/pkg/user"
 	"golang.org/x/oauth2"
 	"io"
 	"io/ioutil"
@@ -12,6 +12,9 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"github.com/cuelabs/sptfy/pkg/track"
+	"github.com/cuelabs/sptfy/internal/auth"
+	"golang.org/x/crypto/nacl/auth"
 )
 
 const (
@@ -19,31 +22,35 @@ const (
 	SPTFY_REDIRECT_URI string = "https://sptfy.cue.zone/callback"
 	SPTFY_SCOPE_SET    string = "'user-read-private'%20'streaming'"
 	SPTFY_STATE_PSK    string = "random"
+	SPTFY_CACHE_LOCATION string = "~/.sptfy/"
+	SPTFY_CACHE_FILENAME string = "token.json"
 )
+
+type SptfyClient interface {
+	RetrieveInfo(query string) (*user.SptfyUser, error)
+
+	RetrieveAuth() (*auth.Authentication, error)
+
+	PlaybackNext() (*track.SptfyTrack, error)
+	PlaybackPlay() (*track.SptfyTrack, error)
+	PlaybackPause() (*track.SptfyTrack, error)
+
+	SearchAlbum(query string)
+}
 
 type Ennvars struct {
 	Version string
 }
 
-type Auth struct {
-	cachePath string
-	token     *oauth2.Token
-}
 
 type Environment struct {
-	auth    Auth
+	auth    Authentication
 	envvars Ennvars
 	log     *log.Logger
 	client http.Client
 }
 
-func (a *Auth) Token(*oauth2.Token, error) {
-	if a.token == nil {
 
-	}
-}
-
-func (a *Auth)
 
 var env Environment
 
@@ -129,12 +136,7 @@ func main() {
 		}
 		switch *searchType {
 		case "":
-			query := fmt.Sprintf ("/?")
-			req := http.NewRequest("GET", url.URL{
-				Scheme: "https",
-				Opaque: "api."
-			})
-			env.client.
+			env.client.SearchTrackByQuery
 		}
 
 

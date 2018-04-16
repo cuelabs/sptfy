@@ -10,7 +10,6 @@ _ "github.com/lib/pq"
 type Store interface {
 	createUser(user *user.SptfyUser) error
 	readUser(id int) (*user.SptfyUser, error)
-	updateUser(id int, fields ...string) error
 }
 
 type DB struct {
