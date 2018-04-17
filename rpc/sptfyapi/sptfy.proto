@@ -17,7 +17,59 @@ message InfoResponse {
   string server_version = 4;
 }
 
-service Playback
+service AuthService {
+  rpc Auth(AuthRequest) returns
+(AuthResponse);
+}
+
+message AuthRequest {
+  string email = 1;
+  bytes password = 2;
+}
+
+message AuthResponse {
+  string access_token = 1;
+}
+
+service PlaybackNextService {
+  rpc PlaybackNext(PlaybackNextRequest) returns
+(PlaybackNextResponse);
+}
+
+message PlaybackNextRequest {
+  string next = 1;
+}
+
+message PlaybackNextResponse {
+  string track_uri = 1;
+}
+
+service PlaybackPlayService {
+  rpc PlaybackPlay(PlaybackPlayRequest) returns
+(PlaybackPlayResponse);
+}
+
+message PlaybackPlayRequest {
+  bool play = 1;
+  string track_uri = 2;
+}
+
+message PlaybackPlayResponse {
+  string playback_url = 1;
+}
+
+service PlaybackPauseService {
+  rpc PlaybackPause(PlaybackPauseRequest) returns
+(PlaybackPauseResponse);
+}
+
+message PlaybackPauseRequest {
+  bool pause = 1;
+}
+
+message PlaybackPauseResponse {
+  string playback_url = 1;
+}
 
 service TrackSearchService {
   rpc SearchTrack(TrackSearchRequest) returns
