@@ -1,7 +1,7 @@
-package models
+package db
 
 import (
-"database/sql"
+"github.com/jmoiron/sqlx"
 "github.com/cuelabs/sptfy/pkg/user"
 _ "github.com/lib/pq"
 "log"
@@ -13,11 +13,11 @@ type Store interface {
 }
 
 type DB struct {
-	*sql.DB
+	*sqlx.DB
 }
 
 func NewDB(dataSourceName string) (*DB, error) {
-	db, err := sql.Open("postgres", dataSourceName)
+	db, err := sqlx.Open("postgres", dataSourceName)
 	if err != nil {
 		log.Print("Could not create a new database in NewDB()")
 		return nil, err

@@ -4,29 +4,32 @@ import (
 	"flag"
 	"fmt"
 	//"golang.org/x/crypto/ssh/terminal"
+	"github.com/cuelabs/sptfy/internal/auth"
+	"github.com/cuelabs/sptfy/pkg/album"
+	"github.com/cuelabs/sptfy/pkg/artist"
+	"github.com/cuelabs/sptfy/pkg/track"
 	"github.com/cuelabs/sptfy/pkg/user"
-	"golang.org/x/oauth2"
+	"github.com/cuelabs/sptfy/rpc/sptfyapi"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"os"
-	"github.com/cuelabs/sptfy/pkg/track"
-	"github.com/cuelabs/sptfy/internal/auth"
 )
 
 const (
-	SPTFY_CLIENT_ID    string = "940383534de04a41b61c51cbbd550708"
-	SPTFY_REDIRECT_URI string = "https://sptfy.cue.zone/callback"
-	SPTFY_SCOPE_SET    string = "'user-read-private'%20'streaming'"
-	SPTFY_STATE_PSK    string = "random"
+	SPTFY_CLIENT_ID      string = "940383534de04a41b61c51cbbd550708"
+	SPTFY_SERVER_ADDRESS string = "https://api.sptfy.cue.zone"
+	SPTFY_REDIRECT_URI   string = "https://sptfy.cue.zone/callback"
+	SPTFY_SCOPE_SET      string = "'user-read-private'%20'streaming'"
+	SPTFY_STATE_PSK      string = "random"
 	SPTFY_CACHE_LOCATION string = "~/.sptfy/"
 	SPTFY_CACHE_FILENAME string = "token.json"
 )
 
-type SptfyClient interface {
-	RetrieveInfo(query string) (*user.SptfyUser, error)
+type SpotifyApiOperations interface {
+	RetrieveInfo() (*user.SptfyUser, error)
 
 	RetrieveAuth() (*auth.Authentication, error)
 
@@ -34,19 +37,28 @@ type SptfyClient interface {
 	PlaybackPlay() (*track.SptfyTrack, error)
 	PlaybackPause() (*track.SptfyTrack, error)
 
-	SearchAlbum(query string)
+	SearchAlbum(query string) (*album.SptfyAlbum, error)
+	SearchArtist(query string) (*artist.SptfyArtist, error)
+	SearchTrack(query string) (*track.SptfyTrack, error)
 }
 
-type Ennvars struct {
+type SptfyClient struct {
+	SptfyServerAddress *url.URL
+}
+
+func (s *SptfyClient) RetrieveInfo() (*user.SptfyUser, error) {
+	client := sptfyapi.New
+}
+
+type Envvars struct {
 	Version string
 }
 
-
 type Environment struct {
 	auth    auth.Authentication
-	envvars Ennvars
+	envvars Envvars
 	log     *log.Logger
-	client http.Client
+	client  *SpotifyApiOperations
 }
 
 var env Environment
@@ -79,6 +91,10 @@ func init() {
 	if err != nil {
 		log.Print()
 	}
+
+	// Give the environment a client from which to call Spotify
+	client := &SptfyClient{}
+	env.client = client
 	fmt.Println(r)
 }
 
@@ -135,7 +151,6 @@ func main() {
 		case "":
 			env.client.SearchTrackByQuery
 		}
-
 
 	}
 

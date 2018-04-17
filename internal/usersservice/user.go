@@ -1,4 +1,4 @@
-package models
+package usersservice
 
 import "github.com/cuelabs/sptfy/pkg/user"
 
