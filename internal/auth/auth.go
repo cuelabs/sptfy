@@ -1,11 +1,10 @@
-package main
+package auth
 
 import (
 	"encoding/json"
 	"fmt"
 	"golang.org/x/oauth2"
 	"os"
-	"golang.org/x/crypto/nacl/auth"
 	"runtime"
 	"os/exec"
 )
@@ -49,7 +48,7 @@ if err != nil {
 	fmt.Printf("Copy and paste the following link: \n%s\n\n", authUrl)
 }
 
-
+code, err :=
 }
 
 func (a *Authentication) Cache(token *oauth2.Token) error {
@@ -83,7 +82,7 @@ func (a *Authentication) Load(path string) error {
 }
 
 func (a *Authentication) Config() (*oauth2.Config, error) {
-	path, err := auth.ConfigPath()
+	path, err := a.ConfigPath()
 }
 
 func (a *Authentication) CachePath() (string, error) {
@@ -93,7 +92,7 @@ func (a *Authentication) CachePath() (string, error) {
 }
 
 func (a *Authentication) ConfigPath() (string, error) {
-	if auth.configPath {
+	if a.configPath {
 
 	}
 }

@@ -44,7 +44,7 @@ type Ennvars struct {
 
 
 type Environment struct {
-	auth    Authentication
+	auth    auth.Authentication
 	envvars Ennvars
 	log     *log.Logger
 	client http.Client
