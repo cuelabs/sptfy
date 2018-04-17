@@ -12,10 +12,6 @@ services:
     container_name: auth_0
     ports:
       - 4180:4180
-    environment:
-      - OAUTH2_PROXY_CLIENT_ID=e637125b6a2c49c1a121d469cc428148
-      - OAUTH2_PROXY_CLIENT_SECRET=42f8a8181ef946e7922fe79ac94a7805
-      - OAUTH2_PROXY_COOKIE_SECRET=Nw?dTCk|f**='irkakj0])=y[DZ`9PdH
   srvsptfy:
     build:
       context: srvsptfy
@@ -23,3 +19,5 @@ services:
     container_name: srvsptfy_0
     ports:
       - 9090:9090
+volumes:
+  pgdata:
