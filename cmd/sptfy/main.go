@@ -16,11 +16,12 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"errors"
 )
 
 const (
 	SPTFY_CLIENT_ID      string = "940383534de04a41b61c51cbbd550708"
-	SPTFY_SERVER_ADDRESS string = "https://api.sptfy.cue.zone"
+	SPTFY_SERVER_ADDRESS string = "https://sptfy.cue.zone"
 	SPTFY_REDIRECT_URI   string = "https://sptfy.cue.zone/callback"
 	SPTFY_SCOPE_SET      string = "'user-read-private'%20'streaming'%20'user-modify-playback-state'"
 	SPTFY_STATE_PSK      string = "random"
@@ -52,8 +53,12 @@ func (s *SptfyClient) RetrieveInfo() (*user.SptfyUser, error) {
 
 func (s *SptfyClient) RetrieveAuth() (*auth.Authentication, error) {
 	clien
+
+
+	return nil, errors.New("Not implemented")
 }
 
+und
 
 type Envvars struct {
 	Version string
