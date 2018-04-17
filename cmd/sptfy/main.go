@@ -30,7 +30,7 @@ const (
 )
 
 type SpotifyApiOperations interface {
-	RetrieveInfo() (*user.SptfyUser, error)
+	RetrieveInfo(a *auth.Authentication) (*user.SptfyUser, error)
 
 	RetrieveAuth() (*auth.Authentication, error)
 
@@ -43,22 +43,38 @@ type SpotifyApiOperations interface {
 	SearchTrack(query string) (*track.SptfyTrack, error)
 }
 
-type SptfyClient struct {
-	SptfyServerAddress *url.URL
+type SpotifyHttpClient struct {}
+
+type SptfyRpcClient struct {
+	SptfyHost *url.URL
 }
 
-func (s *SptfyClient) RetrieveInfo() (*user.SptfyUser, error) {
-	client := sptfyapi.New
+func (s *SpotifyHttpClient) RetrieveInfo(a *auth.Authentication) (*user.SptfyUser, error) {
+	// make URL
+     u := &url.URL{
+     	Scheme: "https",
+     	Host: "api.spotify.com",
+     	Path: "/v1/me",
+	 }
+	 req, err := http.NewRequest("GET", u.String(), nil)
+	 if err != nil {
+	 	return nil, err
+	 }
+	 token, err := a.Token()
+	 if err != nil {
+	 	return nil, err
+	 }
+	 token.SetAuthHeader(req)
+	// get reply
 }
 
-func (s *SptfyClient) RetrieveAuth() (*auth.Authentication, error) {
-	clien
+func (s *SpotifyHttpClient) RetrieveAuth() (*auth.Authentication, error) {
 
 
 	return nil, errors.New("Not implemented")
 }
 
-und
+func (s
 
 type Envvars struct {
 	Version string
@@ -103,7 +119,7 @@ func init() {
 	}
 
 	// Give the environment a client from which to call Spotify
-	client := &SptfyClient{}
+	client := &SptfyRpcClient{}
 	env.client = client
 	fmt.Println(r)
 }

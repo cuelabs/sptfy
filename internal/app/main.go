@@ -3,7 +3,8 @@ package main
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	pb "github.com/cuelabs/sptfy/rpc/sptfyapi"
+	"github.com/cuelabs/sptfy/rpc/sptfyapi"
+	"github.com/cuelabs/sptfy/internal/searchartistservice"
 )
 
 func newRouter() *mux.Router {
@@ -15,8 +16,7 @@ func newRouter() *mux.Router {
 
 func main() {
 
-        http.Handle(pb.ArtistSearchServicePathPrefix,
-
-	r := newRouter()
+	artistSearchServer := searchartistserver.
+	artistSearchHandler := http.Handle(pb.ArtistSearchServicePathPrefix,
 	http.ListenAndServe("10102", nil)
 }
