@@ -14,7 +14,6 @@ import (
 	"os"
 	"github.com/cuelabs/sptfy/pkg/track"
 	"github.com/cuelabs/sptfy/internal/auth"
-	"golang.org/x/crypto/nacl/auth"
 )
 
 const (
@@ -49,8 +48,6 @@ type Environment struct {
 	log     *log.Logger
 	client http.Client
 }
-
-
 
 var env Environment
 

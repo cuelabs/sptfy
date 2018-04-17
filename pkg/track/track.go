@@ -44,4 +44,5 @@ func (t *SptfyTrack) Play() error {
 		fmt.Println(c)
 		return errors.New("implement")
 	}
+	return nil
 }

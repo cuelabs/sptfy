@@ -1,9 +1,10 @@
 package playlist
 
 import (
+	"net/url"
 	"github.com/cuelabs/sptfy/pkg/track"
 	"github.com/cuelabs/sptfy/pkg/user"
-	"net/url"
+
 )
 
 type SptfyPlaylist struct {

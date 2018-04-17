@@ -14,7 +14,7 @@ build:
 #	$(GOTEST) -v ./...
 clean:
 	$(GOCLEAN)
-	rm -f $(BINARY_NAME)
-	rm -f $(BINARY_UNIX)
+	rm -fv ./cmd/sptfy/$(BINARY_NAME)
+	rm -f ./cmd/sptfy$(BINARY_UNIX)
 run:
 	$(GOBUILD) -o $(BINARY_NAME) -v ./...
