@@ -1,10 +1,17 @@
 package spotifyclient
 
-type SpotifyHttpClient struct {}
-
-type SptfyRpcClient struct {
-	SptfyHost *url.URL
-}
+import (
+	"net/url"
+	"github.com/cuelabs/sptfy/internal/auth
+	"github.com/cuelabs/sptfy/internal/environment"
+	"github.com/cuelabs/sptfy/pkg/track"
+	"github.com/cuelabs/sptfy/pkg/album"
+	"github.com/cuelabs/sptfy/pkg/artist"
+	"github.com/cuelabs/sptfy/pkg/user"
+	"net/http"
+	"fmt"
+	"io/ioutil"
+)
 
 type SpotifyApiOperations interface {
 	RetrieveInfo(e *environment.Environment) (*user.SptfyUser, error)
@@ -16,12 +23,18 @@ type SpotifyApiOperations interface {
 	PlaybackPause(a *auth.Authentication) (*track.SptfyTrack, error)
 
 	// Do I need to pass in auth.Authentication for this?
-	SearchAlbum(query string) (*album.SptfyAlbum, error)
-	SearchArtist(query string) (*artist.SptfyArtist, error)
+	SearchAlbum(query string, e *environment.Environment) (*album.SptfyAlbum, error)
+	SearchArtist(query string, e *environment.Environment) (*artist.SptfyArtist, error)
 	SearchTrack(query string) (*track.SptfyTrack, error)
 }
 
-func (s *SpotifyHttpClient) RetrieveInfo(e *Environment) (*user.SptfyUser, error) {
+type SpotifyHttpClient struct {}
+
+type SptfyRpcClient struct {
+	SptfyHost *url.URL
+}
+
+func (s *SpotifyHttpClient) RetrieveInfo(e *environment.Environment) (*user.SptfyUser, error) {
 	// Create a client
 	token, err := e.auth.Token()
 	 if err != nil {
@@ -49,6 +62,13 @@ func (s *SpotifyHttpClient) RetrieveInfo(e *Environment) (*user.SptfyUser, error
 	 	e.log.Println("Request failed in RetrieveInfo()")
 	 }
 	 // marshall data response to
+
+
+
+
+
+
+	 return nil, errors.New("Not implemented")
 }
 
 func (s *SpotifyHttpClient) RetrieveAuth() (*auth.Authentication, error) {
@@ -86,11 +106,13 @@ func (s *SpotifyHttpClient) SearchAlbum(query string) (*album.SptfyAlbum, error)
 			//
     b, err := ioutil.ReadAll(resp.Body)
     fmt.Println(b)
-    fmt.Println("Got to the enc of SearchAlbum()")
-    return nil, nil
+    fmt.Println("Got to the end of SearchAlbum()")
+    return nil, errors.New("Implemented but not tested")
 }
 
 func (s *SpotifyHttpClient) SearchArtist(query string) (*artist.SptfyArtist, error) {
 	// sanitize query string; replace spaces with '%20'
 	sp := fmt.Sprintf("/v1/search?q=%v")
 }
+
+func (s *SpotifyHttpClient)
