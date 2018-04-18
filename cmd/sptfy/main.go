@@ -21,7 +21,7 @@ import (
 
 const (
 	SPTFY_CLIENT_ID      string = "940383534de04a41b61c51cbbd550708"
-	SPTFY_SERVER_ADDRESS string = "https://sptfy.cue.zone"
+	SPTFY_HOST string = "sptfy.cue.zone"
 	SPTFY_REDIRECT_URI   string = "https://sptfy.cue.zone/callback"
 	SPTFY_SCOPE_SET      string = "'user-read-private'%20'streaming'%20'user-modify-playback-state'"
 	SPTFY_STATE_PSK      string = "random"
@@ -34,10 +34,11 @@ type SpotifyApiOperations interface {
 
 	RetrieveAuth() (*auth.Authentication, error)
 
-	PlaybackNext() (*track.SptfyTrack, error)
-	PlaybackPlay() (*track.SptfyTrack, error)
-	PlaybackPause() (*track.SptfyTrack, error)
+	PlaybackNext(a *auth.Authentication) (*track.SptfyTrack, error)
+	PlaybackPlay(a *auth.Authentication) (*track.SptfyTrack, error)
+	PlaybackPause(a *auth.Authentication) (*track.SptfyTrack, error)
 
+	// Do I need to pass in auth.Authentication for this?
 	SearchAlbum(query string) (*album.SptfyAlbum, error)
 	SearchArtist(query string) (*artist.SptfyArtist, error)
 	SearchTrack(query string) (*track.SptfyTrack, error)
@@ -66,15 +67,55 @@ func (s *SpotifyHttpClient) RetrieveInfo(a *auth.Authentication) (*user.SptfyUse
 	 }
 	 token.SetAuthHeader(req)
 	// get reply
+
+
+	// make a request
+
 }
 
 func (s *SpotifyHttpClient) RetrieveAuth() (*auth.Authentication, error) {
-
-
 	return nil, errors.New("Not implemented")
 }
 
-func (s
+// These handlers control playback with a Spotify
+func (s *SpotifyHttpClient) PlaybackNext(a *auth.Authentication) (*track.SptfyTrack, error) {
+	return nil, errors.New("Not implemented")
+}
+
+func (s *SpotifyHttpClient) PlaybackPlay() (*track.SptfyTrack, error) {
+    return nil, errors.New("Not implemented")
+}
+
+func (s *SpotifyHttpClient) PlaybackPause(a *auth.Authentication) (*track.SptfyTrack, error) {
+    return nil, errors.New("Not implemented")
+}
+
+// These handlers search the Spotify API with(out) authentication
+func (s *SpotifyHttpClient) SearchAlbum(query string) (*album.SptfyAlbum, error) {
+	// search path
+	sp := fmt.Sprintf("/v1/search?q=%v&type=album", query)
+	// search url
+	su := &url.URL{
+		Scheme: "https",
+		Host: "api.spotify.com",
+		Path: sp}
+		resp, err := http.Get(su.String())
+		if err != nil {
+			return nil, err
+			}
+			defer resp.Body.Close()
+			// no auth?
+			//
+    b, err := ioutil.ReadAll(resp.Body)
+    fmt.Println(b)
+    fmt.Println("Got to the enc of SearchAlbum()")
+    return nil, nil
+}
+
+func (s *SpotifyHttpClient) SearchArtist(query string) (*artist.SptfyArtist, error) {
+	sp := fmt.Sprintf("/v1/searc")
+}
+
 
 type Envvars struct {
 	Version string
@@ -119,7 +160,7 @@ func init() {
 	}
 
 	// Give the environment a client from which to call Spotify
-	client := &SptfyRpcClient{}
+	client := &SptfyRpcClient{&url.URL{Scheme: "https", Host: SPTFY_HOST}}
 	env.client = client
 	fmt.Println(r)
 }

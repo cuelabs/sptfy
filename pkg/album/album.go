@@ -1,18 +1,28 @@
 package album
 
 import (
-	"net/url"
-	"net/http"
-    "github.com/cuelabs/sptfy/pkg/artist"
+	"github.com/cuelabs/sptfy/pkg/artist"
 	"io/ioutil"
+	"net/http"
+	"net/url"
 )
 
 type SptfyAlbum struct {
-    Name *string `json:"name"`
-    Artists []*artist.SptfyArtist `json:"artists"`
-	Id   *string `json:"id"`
-	Uri  *string `json:"uri"`
-	Href *url.URL `json:"href"`
+	Name    *string               `json:"name"`
+	Artists []*artist.SptfyArtist `json:"artists"`
+	Id      *string               `json:"id"`
+	Uri     *string               `json:"uri"`
+	Href    *url.URL              `json:"href"`
+}
+
+type SpotifyApiAlbumResponse struct {
+	Artists struct {
+		Href `json:"href"`
+		items []struct {
+
+		}
+	} `json:"artists"`
+
 }
 
 func (a *SptfyAlbum) Details() (*[]byte, error) {

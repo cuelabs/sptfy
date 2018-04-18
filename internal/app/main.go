@@ -16,7 +16,7 @@ func newRouter() *mux.Router {
 
 func main() {
 
-	artistSearchServer := searchartistserver.
+	artistSearchServer := searchartistservice.ArtistSearchServer{}
 	artistSearchHandler := http.Handle(pb.ArtistSearchServicePathPrefix,
 	http.ListenAndServe("10102", nil)
 }
