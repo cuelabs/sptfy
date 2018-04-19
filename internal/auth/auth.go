@@ -6,8 +6,11 @@ import (
 	"fmt"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/spotify"
+	"net/url"
 	"os"
 	"os/exec"
+	"os/user"
+	"path/filepath"
 	"runtime"
 )
 
@@ -15,6 +18,8 @@ const (
 	SPTFY_SERVER_ADDRESS string = "https://sptfy.cue.zone"
 	SPTFY_CLIENT_ID      string = "940383534de04a41b61c51cbbd550708"
 	SPTFY_REDIRECT_URI   string = "https://sptfy.cue.zone/callback"
+	SPTFY_CACHE_LOCATION string = ".sptfy/"
+	SPTFY_CACHE_FILENAME string = "token.json"
 )
 
 type Authentication struct {
@@ -77,7 +82,7 @@ func (a *Authentication) Authenticate() error {
 		return err
 	}
 	a.token = token
-	a.Save()
+	a.Save("")
 	return nil
 }
 
@@ -86,16 +91,31 @@ func (a *Authentication) Config() (*oauth2.Config, error) {
 	scopes := []string{}
 	scopes = append(scopes, "user-read-private", "streaming", "user-modify-playback-state")
 	return &oauth2.Config{
-		ClientID: SPTFY_CLIENT_ID,
-		Scopes: scopes,
-		Endpoint: spotify.Endpoint,
-		RedirectURL: SPTFY_REDIRECT_URI,
+		ClientID:     SPTFY_CLIENT_ID,
+		Scopes:       scopes,
+		Endpoint:     spotify.Endpoint,
+		RedirectURL:  SPTFY_REDIRECT_URI,
 		ClientSecret: os.Getenv("SPTFY_CLIENT_SECRET"),
 	}, nil
 }
 
-func (a *Authentication) Cache(token *oauth2.Token) error {
+// done
+func (a *Authentication) CachePath() (string, error) {
+	if a.cachePath == "" {
+		// look up home directory
+		usr, err := user.Current()
+		if err != nil {
+			return "", err
+		}
 
+		// make hidden cache directory
+		cacheDir := filepath.Join(usr.HomeDir, SPTFY_CACHE_LOCATION)
+		os.MkdirAll(cacheDir, 0700)
+
+		cacheFile := url.QueryEscape(SPTFY_CACHE_FILENAME)
+		a.cachePath = filepath.Join(cacheDir, cacheFile)
+	}
+	return a.cachePath, nil
 }
 
 // Returns an error if token cannot be loaded from cache.
@@ -124,14 +144,39 @@ func (a *Authentication) Load(path string) error {
 	return nil
 }
 
-func (a *Authentication) CachePath() (string, error) {
-	if a.cachePath == "" {
-		// look up home directory
+func (a *Authentication) Save(path string) error {
+	var err error
+
+	if path == "" {
+		path, err = a.CachePath()
+		if err != nil {
+			return err
+		}
+	} else {
+		a.cachePath = path
 	}
+
+	// Open the file for writing
+	f, err := os.Create(path)
+	if err != nil {
+		return fmt.Errorf("Unable to cache oauth token: %v", err)
+	}
+	defer f.Close()
+
+	// Encode the token and write to disk
+	if err := json.NewEncoder(f).Encode(a.token); err != nil {
+		return fmt.Errorf("Could not encode oauth token: %v", err)
+	}
+	return nil
 }
 
-func (a *Authentication) ConfigPath() (string, error) {
-	if a.configPath {
-
+func (a *Authentication) Delete(path string) {
+	if path == "" {
+		path, _ = a.CachePath()
+	} else {
+		a.cachePath = path
 	}
+
+	// Delete the file at the cache path if it exists
+	os.Remove(path)
 }

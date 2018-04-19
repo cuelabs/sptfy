@@ -5,7 +5,6 @@ import (
 	"fmt"
 	//"golang.org/x/crypto/ssh/terminal"
 	"github.com/cuelabs/sptfy/internal/auth"
-	"github.com/cuelabs/sptfy/internal/environment"
 	"github.com/cuelabs/sptfy/internal/spotifyclient"
 	"io"
 	"io/ioutil"
@@ -15,7 +14,6 @@ import (
 	"os"
 	"errors"
 	"context"
-	"golang.org/x/crypto/nacl/auth"
 )
 
 const (
@@ -24,14 +22,23 @@ const (
 	SPTFY_REDIRECT_URI   string = "https://sptfy.cue.zone/callback"
 	SPTFY_SCOPE_SET      string = "'user-read-private'%20'streaming'%20'user-modify-playback-state'"
 	SPTFY_STATE_PSK      string = "random"
-	SPTFY_CACHE_LOCATION string = "~/.sptfy/"
-	SPTFY_CACHE_FILENAME string = "token.json"
+	SPTFY_CLIENT_TYPE    string = "SpotifyHttp" // "SptfyRpc"
+
 )
 
 
+type Envvars struct {
+	Version string
+}
 
+type Environment struct {
+	auth    auth.Authentication
+	envvars Envvars
+	log     *log.Logger
+	client  *spotifyclient.SpotifyApiOperations
+}
 
-var env environment.Environment
+var env Environment
 
 func init() {
 	env.log = log.New(os.Stdout, "SPTFY", 0)
@@ -65,6 +72,7 @@ func init() {
 	// Give the environment a client from which to call Spotify
 	client := &spotifyclient.SptfyRpcClient{&url.URL{Scheme: "https", Host: SPTFY_HOST}}
 	env.client = client
+	log.Println("Got to the end of init()")
 	fmt.Println(r)
 }
 

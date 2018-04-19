@@ -2,8 +2,7 @@ package spotifyclient
 
 import (
 	"net/url"
-	"github.com/cuelabs/sptfy/internal/auth
-	"github.com/cuelabs/sptfy/internal/environment"
+	"github.com/cuelabs/sptfy/internal/auth"
 	"github.com/cuelabs/sptfy/pkg/track"
 	"github.com/cuelabs/sptfy/pkg/album"
 	"github.com/cuelabs/sptfy/pkg/artist"
@@ -14,11 +13,11 @@ import (
 )
 
 type SpotifyApiOperations interface {
-	RetrieveInfo(e *environment.Environment) (*user.SptfyUser, error)
+	RetrieveInfo(e *Environment) (*user.SptfyUser, error)
 
 	RetrieveAuth() (*auth.Authentication, error)
 
-	PlaybackNext(e *environment.Environment) (*track.SptfyTrack, error)
+	PlaybackNext(e *Environment) (*track.SptfyTrack, error)
 	PlaybackPlay(a *auth.Authentication) (*track.SptfyTrack, error)
 	PlaybackPause(a *auth.Authentication) (*track.SptfyTrack, error)
 
