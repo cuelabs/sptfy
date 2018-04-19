@@ -3,8 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	//"golang.org/x/crypto/ssh/terminal"
-	"github.com/cuelabs/sptfy/internal/auth"
+	"github.com/cuelabs/sptfy/internal/environment"
 	"github.com/cuelabs/sptfy/internal/spotifyclient"
 	"io"
 	"io/ioutil"
@@ -12,8 +11,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"errors"
-	"context"
 )
 
 const (
@@ -26,24 +23,21 @@ const (
 
 )
 
-
-type Envvars struct {
-	Version string
+var vars = &environment.Envvars{
+	Version:    "0.0.1",
+	ClientType: "SpotifyHttp",
 }
 
-type Environment struct {
-	auth    auth.Authentication
-	envvars Envvars
-	log     *log.Logger
-	client  *spotifyclient.SpotifyApiOperations
-}
-
-var env Environment
+var env *environment.Environment
 
 func init() {
-	env.log = log.New(os.Stdout, "SPTFY", 0)
-	initLog := env.log
-	initLog.Println("Initiated SPTFY logging")
+	// Environment variables gathered from environment
+	env = &environment.Environment{
+		nil,
+		vars,
+		log.New(os.Stdout, "SPTFY", 0),
+		nil}
+	env.Log.Println("Initiated SPTFY logging")
 	authSpotifyUrl := url.URL{
 		Scheme: "https",
 		Host:   "accounts.spotify.com/authorize",
@@ -52,16 +46,10 @@ func init() {
 			SPTFY_REDIRECT_URI,
 			SPTFY_STATE_PSK,
 			SPTFY_SCOPE_SET)}
-	//req, err := http.NewRequest("GET", authSpotifyUrl.String(), nil)
-	//if err != nil {
-	//	initLog.Println("Unable to craft a Spotify API authorization request. Exiting")
-	//	initLog.Print(err)
-	//	os.Exit(1)
-	//}
 	resp, err := http.Get(authSpotifyUrl.String())
 	if err != nil {
-		initLog.Println("Error requesting Spotify authorization. Exiting")
-		initLog.Print(err)
+		env.Log.Println("Error requesting Spotify authorization. Exiting.")
+		env.Log.Print(err)
 		os.Exit(1)
 	}
 	r, err := ioutil.ReadAll(resp.Body)
@@ -70,9 +58,17 @@ func init() {
 	}
 
 	// Give the environment a client from which to call Spotify
-	client := &spotifyclient.SptfyRpcClient{&url.URL{Scheme: "https", Host: SPTFY_HOST}}
-	env.client = client
-	log.Println("Got to the end of init()")
+	s := fmt.Sprintf("%vClient", env.Vars.ClientType)
+	switch {
+	case s == "SpotifyHttpClient":
+		env.Client = &spotifyclient.SpotifyHttpClient{}
+	case s == "SptfyRpcClient":
+		env.Client = &spotifyclient.SptfyRpcClient{&url.URL{Scheme: "https", Host: SPTFY_HOST}}
+	default:
+		env.Log.Println("Client type not valid. Check environment variables. Exiting.")
+		fmt.Println("Client type not valid. Exiting.")
+        os.Exit(1)
+	}
 	fmt.Println(r)
 }
 
