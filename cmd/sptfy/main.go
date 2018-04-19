@@ -14,12 +14,12 @@ import (
 )
 
 const (
-	SPTFY_CLIENT_ID      string = "940383534de04a41b61c51cbbd550708"
-	SPTFY_HOST string = "sptfy.cue.zone"
-	SPTFY_REDIRECT_URI   string = "https://sptfy.cue.zone/callback"
-	SPTFY_SCOPE_SET      string = "'user-read-private'%20'streaming'%20'user-modify-playback-state'"
-	SPTFY_STATE_PSK      string = "random"
-	SPTFY_CLIENT_TYPE    string = "SpotifyHttp" // "SptfyRpc"
+	SPTFY_CLIENT_ID    string = "940383534de04a41b61c51cbbd550708"
+	SPTFY_HOST         string = "sptfy.cue.zone"
+	SPTFY_REDIRECT_URI string = "https://sptfy.cue.zone/callback"
+	SPTFY_SCOPE_SET    string = "'user-read-private'%20'streaming'%20'user-modify-playback-state'"
+	SPTFY_STATE_PSK    string = "random"
+	SPTFY_CLIENT_TYPE  string = "SpotifyHttp" // "SptfyRpc"
 
 )
 
@@ -54,7 +54,7 @@ func init() {
 	}
 	r, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Print()
+		log.Print("Could not request authorization")
 	}
 
 	// Give the environment a client from which to call Spotify
@@ -62,12 +62,14 @@ func init() {
 	switch {
 	case s == "SpotifyHttpClient":
 		env.Client = &spotifyclient.SpotifyHttpClient{}
-	case s == "SptfyRpcClient":
+	/*
+		case s == "SptfyRpcClient":
 		env.Client = &spotifyclient.SptfyRpcClient{&url.URL{Scheme: "https", Host: SPTFY_HOST}}
+	*/
 	default:
 		env.Log.Println("Client type not valid. Check environment variables. Exiting.")
 		fmt.Println("Client type not valid. Exiting.")
-        os.Exit(1)
+		os.Exit(1)
 	}
 	fmt.Println(r)
 }
@@ -123,7 +125,14 @@ func main() {
 		}
 		switch *searchType {
 		case "":
-			env.client.SearchTrackByQuery
+			a, err := env.Client.SearchArtist(*searchQuery, env)
+			if err != nil {
+				env.Log.Println("Failed SearchArtist()")
+				fmt.Println()
+			}
+
+			// marshall to artists CLI output response
+
 		}
 
 	}
@@ -135,25 +144,6 @@ func main() {
 	}
 }
 
-/*
-// Send CLI user login info to authorization server
-//
-func Authenticate(email string, password []byte) (token string, err error) {
-	p := fmt.Sprintf("/?client_id=%v&response_type=token&scope=%v&show_dialog=false&redirect_uri=https://sptfy.cue.zone/redirect",
-		SPTFY_CLIENT_ID,
-		SPTFY_SCOPE_SET)
-	//body := fmt.Sprintf("email=%s&password=%s", email, password)
-
-	u := url.URL{Scheme: "https", Host: "accounts.spotify.com/authorize", Path: p}
-	req, err := http.NewRequest("POST", u, nil)
-	if err != nil {
-		fmt.Println("")
-	}
-	resp, err := http.Client.Do(req)
-	r, err := ioutil.ReadAll(resp.Body)
-	fmt.Println(r)
-	return "", nil
-}*/
 
 func makeAccessHeader(access_token string) http.Header {
 	header := make(http.Header)
