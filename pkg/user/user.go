@@ -11,12 +11,27 @@ type SptfyUser struct {
 	Href        url.URL `json:"href"`
 }
 
+type SpotifyAPIUserResponse struct {
+	Birthdate    string `json:"birthdate"`
+	Country      string `json:"country"`
+	DisplayName  string `json:"display_name"`
+	Email        string `json:"email"`
+	ExternalURLs struct {
+		Spotify string `json:"spotify"`
+	} `json:"external_urls"`
 
-// TODO look at https://api.cue.zone/v1/me
-type SpotifyUserInfoResponse struct {
-	DisplayName string `json:"display_name"`
-	LoginEmail  string `json:""`
-	NowPlaying  string
+	Followers struct {
+		Href  string `json:"href"`
+		Total int    `json:"total"`
+	} `json:"followers"`
+	Href   string `json:"href"`
+	Id     string `json:"id"`
+	Images []struct {
+		Height int    `json:"height"`
+		Url    string `json:"url"`
+		Width  int    `json:"width"`
+	} `json:"images"`
+	Product string `json:"product"`
+	Type    string `json:"type"`
+	Uri     string `json:"uri"`
 }
-
-//func (u *SptfyUser) Playlists(n int) ([]*playlist.SptfyPlaylist, error) {}

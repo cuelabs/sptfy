@@ -144,7 +144,6 @@ func main() {
 	}
 }
 
-
 func makeAccessHeader(access_token string) http.Header {
 	header := make(http.Header)
 	header.Set("Accept", "application/json")

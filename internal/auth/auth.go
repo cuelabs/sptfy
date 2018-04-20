@@ -23,15 +23,15 @@ const (
 )
 
 type Authentication struct {
-	cachePath string
-	token     *oauth2.Token
+	CachePath string
+	Token     *oauth2.Token
 }
 
 // First look for the token on disk
 // If it doesn't exist, then execute the authentication
-func (a *Authentication) Token() (*oauth2.Token, error) {
+func (a *Authentication) GetToken() (*oauth2.Token, error) {
 	// Load the token from the cache it it does not exist
-	if a.token == nil {
+	if a.Token == nil {
 		if err := a.Load(""); err != nil {
 			if err != nil {
 				if err = a.Authenticate(); err != nil {
@@ -40,7 +40,7 @@ func (a *Authentication) Token() (*oauth2.Token, error) {
 			}
 		}
 	}
-	return a.token, nil
+	return a.Token, nil
 }
 
 func (a *Authentication) Authenticate() error {
@@ -81,7 +81,7 @@ func (a *Authentication) Authenticate() error {
 	if err != nil {
 		return err
 	}
-	a.token = token
+	a.Token = token
 	a.Save("")
 	return nil
 }
@@ -100,8 +100,8 @@ func (a *Authentication) Config() (*oauth2.Config, error) {
 }
 
 // done
-func (a *Authentication) CachePath() (string, error) {
-	if a.cachePath == "" {
+func (a *Authentication) GetCachePath() (string, error) {
+	if a.CachePath == "" {
 		// look up home directory
 		usr, err := user.Current()
 		if err != nil {
@@ -113,21 +113,21 @@ func (a *Authentication) CachePath() (string, error) {
 		os.MkdirAll(cacheDir, 0700)
 
 		cacheFile := url.QueryEscape(SPTFY_CACHE_FILENAME)
-		a.cachePath = filepath.Join(cacheDir, cacheFile)
+		a.CachePath = filepath.Join(cacheDir, cacheFile)
 	}
-	return a.cachePath, nil
+	return a.CachePath, nil
 }
 
 // Returns an error if token cannot be loaded from cache.
 func (a *Authentication) Load(path string) error {
 	var err error
 	if path == "" {
-		path, err = a.CachePath()
+		path, err = a.GetCachePath()
 		if err != nil {
 			return err
 		}
 	} else {
-		a.cachePath = path
+		a.CachePath = path
 	}
 
 	// open the file at the path
@@ -137,8 +137,8 @@ func (a *Authentication) Load(path string) error {
 	}
 	defer f.Close()
 
-	a.token = new(oauth2.Token)
-	if err := json.NewDecoder(f).Decode(a.token); err != nil {
+	a.Token = new(oauth2.Token)
+	if err := json.NewDecoder(f).Decode(a.Token); err != nil {
 		return fmt.Errorf("Could not decode token in cache file at %s: %v", path, err)
 	}
 	return nil
@@ -148,12 +148,12 @@ func (a *Authentication) Save(path string) error {
 	var err error
 
 	if path == "" {
-		path, err = a.CachePath()
+		path, err = a.GetCachePath()
 		if err != nil {
 			return err
 		}
 	} else {
-		a.cachePath = path
+		a.CachePath = path
 	}
 
 	// Open the file for writing
@@ -164,7 +164,7 @@ func (a *Authentication) Save(path string) error {
 	defer f.Close()
 
 	// Encode the token and write to disk
-	if err := json.NewEncoder(f).Encode(a.token); err != nil {
+	if err := json.NewEncoder(f).Encode(a.Token); err != nil {
 		return fmt.Errorf("Could not encode oauth token: %v", err)
 	}
 	return nil
@@ -172,9 +172,9 @@ func (a *Authentication) Save(path string) error {
 
 func (a *Authentication) Delete(path string) {
 	if path == "" {
-		path, _ = a.CachePath()
+		path, _ = a.GetCachePath()
 	} else {
-		a.cachePath = path
+		a.CachePath = path
 	}
 
 	// Delete the file at the cache path if it exists

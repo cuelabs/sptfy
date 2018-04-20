@@ -17,13 +17,15 @@ type SptfyAlbum struct {
 
 type SpotifyApiAlbumResponse struct {
 	Artists struct {
-		Href `json:"href"`
+		Href string `json:"href"`
 		items []struct {
 
 		}
 	} `json:"artists"`
 
 }
+
+// THIS WEEKEND API RESPONSEScd
 
 func (a *SptfyAlbum) Details() (*[]byte, error) {
 	resp, err := http.Get(a.Href.String())
