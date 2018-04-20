@@ -3,13 +3,16 @@ package main
 import (
 	"github.com/gorilla/mux"
 	"net/http"
-	"github.com/cuelabs/sptfy/rpc/sptfyapi"
+	pb "github.com/cuelabs/sptfy/rpc/sptfyapi"
 	"github.com/cuelabs/sptfy/internal/searchartistservice"
 )
 
 func newRouter() *mux.Router {
 	r := mux.NewRouter().StrictSlash(true)
-	//r.Handle(pb.ArtistSearchServicePathPrefix, searchArtistHandler(g))
+        is := infoservice.InfoService
+	r.Handle(pb.InfoServicePathPrefix,
+
+        //r.Handle(pb.ArtistSearchServicePathPrefix, searchArtistHandler(g))
 	//r.Handle(pb.AlbumSearchServicePathPrefix, searchAlbumHandler(g))
 	return r
 }
