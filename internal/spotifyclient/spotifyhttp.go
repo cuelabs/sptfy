@@ -13,11 +13,10 @@ import (
 	"github.com/cuelabs/sptfy/pkg/user"
 	"context"
 	"errors"
+	"encoding/json"
 )
 
 type SpotifyHttpClient struct {}
-
-
 
 func (s *SpotifyHttpClient) RetrieveInfo(e *environment.Environment) (*user.SptfyUser, error) {
 	// Create a client
@@ -46,11 +45,11 @@ func (s *SpotifyHttpClient) RetrieveInfo(e *environment.Environment) (*user.Sptf
 	if err != nil {
 		e.Log.Println("Request failed in RetrieveInfo()")
 	}
-	r, err := ioutil.ReadAll(resp.Body)
+	b, err := ioutil.ReadAll(resp.Body)
 	// marshall data response to
 
 
-	fmt.Printf("This is the response: %v", r)
+	fmt.Printf("This is the response: %v", b)
 
 	return nil, errors.New("Not implemented")
 }
@@ -68,9 +67,15 @@ func (s *SpotifyHttpClient) RetrieveAuth(e *environment.Environment) error {
 	// Ensure access token exists and is active
 	u, err := e.Client.RetrieveInfo(e)
 	if err != nil {
-
+         e.Log.Println(("Unable to retrieve a user in RetrieveAuth()"))
+         return err
 	}
-	return errors.New("Not implemented")
+	// Display some authorization content
+	e.Log.Println("RetrieveAuth() successful. Displaying auth info for user ", u.Id)
+	fmt.Println("Display Name: ", u.DisplayName)
+	fmt.Println("Email Address: ", u.Email)
+	fmt.Print("\nSuccessfully authoirzed!\n\n")
+	return nil
 }
 
 // These handlers control playback with a Spotify
@@ -86,7 +91,7 @@ func (s *SpotifyHttpClient) PlaybackPause(e *environment.Environment) (*track.Sp
 	return nil, errors.New("Not implemented")
 }
 
-// These handlers search the Spotify API with(out) authentication
+// Return a list of sptfy albums
 func (s *SpotifyHttpClient) SearchAlbum(query string, e *environment.Environment) ([]*album.SptfyAlbum, error) {
 	// search path
 	sp := fmt.Sprintf("/v1/search?q=%v&type=album", query)
@@ -100,12 +105,34 @@ func (s *SpotifyHttpClient) SearchAlbum(query string, e *environment.Environment
 		return nil, err
 	}
 	defer resp.Body.Close()
-	// no auth?
-	//
+
 	b, err := ioutil.ReadAll(resp.Body)
-	fmt.Println(b)
-	fmt.Println("Got to the end of SearchAlbum()")
-	return nil, errors.New("Not imeplemented")
+	if err != nil {
+		e.Log.Println("Unable to read response body in SearchAlbum()")
+		return nil, err
+	}
+	var res album.SpotifyAPIAlbumResponse
+	if err := json.Unmarshal(b, &res); err != nil{
+		e.Log.Println("Unable to unmarshal album search result in SearchAlbum()")
+		return nil, err
+	}
+	var albums []*album.SptfyAlbum
+	for _, alb := range(res.Albums.Items) {
+		u, err := url.Parse(alb.Href)
+		if err != nil {
+			e.Log.Println("Unable to parse href URL in SearchAlbum()")
+			e.Log.Print(err.Error())
+			return nil, err
+		}
+		n := &album.SptfyAlbum{
+			&alb.Name,
+			&alb.Id,
+			&alb.Uri,
+			u,
+		}
+		albums = append(albums, n)
+	}
+	return albums, nil
 }
 
 func (s *SpotifyHttpClient) SearchArtist(query string, e *environment.Environment) ([]*artist.SptfyArtist, error) {

@@ -4,7 +4,6 @@ import (
 	"net/url"
 	"github.com/cuelabs/sptfy/pkg/track"
 	"github.com/cuelabs/sptfy/pkg/user"
-
 )
 
 type SptfyPlaylist struct {

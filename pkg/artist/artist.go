@@ -2,8 +2,6 @@ package artist
 
 import (
 	"net/url"
-	"net/http"
-	"io/ioutil"
 )
 
 type SptfyArtist struct {
@@ -13,7 +11,26 @@ type SptfyArtist struct {
 	Href *url.URL `json:"href"`
 }
 
-//
-type SpotifyAPIArtistResponse struct {
-
+type SpotifyAPIArtistSearchResponse struct {
+	Artists struct {
+		Href  string `json:"href"`
+		Items []struct {
+			ExternalUrls struct {
+				Spotify string `json:"spotify"`
+			} `json:"external_urls"`
+			Genres []struct {} `json:"genres"` // need a working example of this
+			Href string `json:"href"`
+			Id string `json:"id"`
+			Images []struct {
+				Height int `json:"height"`
+				Url string `json:"url"`
+				Width string `json:"width"`
+			} `json:"images"`
+		} `json:"items"`
+		Limit int `json:"limit"`
+		// Next int `json:"next"` // I don't know the type
+		Offset int `json:"offset"`
+		// Previous int `json:"previous"` // Same here
+		Total int `json:"total"`
+	} `json:"artists"`
 }

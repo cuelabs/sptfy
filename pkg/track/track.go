@@ -3,11 +3,7 @@ package track
 import (
 	"github.com/cuelabs/sptfy/pkg/album"
 	"github.com/cuelabs/sptfy/pkg/artist"
-	"io/ioutil"
-	"net/http"
 	"net/url"
-	"errors"
-	"fmt"
 )
 
 type SptfyTrack struct {
@@ -15,34 +11,32 @@ type SptfyTrack struct {
 	Name        *string               `json:"name"`
 	Artists     []*artist.SptfyArtist `json:"artists"`
 	Album       *album.SptfyAlbum     `json:"album"`
-	IsPlayable  bool `json:"is_playable"`
+	IsPlayable  bool                  `json:"is_playable"`
 	Id          *string               `json:"id"`
 	Uri         *string               `json:"uri"`
-	Href        *url.URL               `json:"href"`
+	Href        *url.URL              `json:"href"`
 }
 
-// Display web API endpoint containing full entry for Spotify track
-func (t *SptfyTrack) Details() (*[]byte, error) {
-	resp, err := http.Get(t.Href.String())
-	defer resp.Body.Close()
-	if err != nil {
-		return nil, err
-	}
-	c, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return &c, nil
-}
-
-func (t *SptfyTrack) Play() error {
-	resp, err := http.Get(t.PlaybackUrl.String())
-	c, err := ioutil.ReadAll(resp.Body)
-	defer resp.Body.Close()
-	if err == nil {
-		// implement
-		fmt.Println(c)
-		return errors.New("implement")
-	}
-	return nil
+type SpotifyAPITrackSearchResponse struct {
+	Tracks struct {
+		Href  string `json:"href"`
+		Items []struct {
+			ExternalUrls struct {
+				Spotify string `json:"spotify"`
+			} `json:"external_urls"`
+			Genres []struct {} `json:"genres"` // need a working example of this
+			Href string `json:"href"`
+			Id string `json:"id"`
+			Images []struct {
+				Height int `json:"height"`
+				Url string `json:"url"`
+				Width string `json:"width"`
+			} `json:"images"`
+		} `json:"items"`
+		Limit int `json:"limit"`
+		// Next int `json:"next"` // I don't know the type
+		Offset int `json:"offset"`
+		// Previous int `json:"previous"` // Same here
+		Total int `json:"total"`
+	} `json:"tracks"`
 }

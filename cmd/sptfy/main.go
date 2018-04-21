@@ -125,12 +125,14 @@ func main() {
 		}
 		switch *searchType {
 		case "":
-			a, err := env.Client.SearchArtist(*searchQuery, env)
+			a, err := env.Client.SearchTrack(*searchQuery, env)
 			if err != nil {
 				env.Log.Println("Failed SearchArtist()")
 				fmt.Println()
 			}
 
+		case "track":
+			a, err := env.Client.SearchTrack(*searchQuery, env)
 			// marshall to artists CLI output response
 
 		}

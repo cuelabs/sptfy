@@ -1,19 +1,8 @@
 package spotifyclient
 
 import (
-	"net/url"
-	"github.com/cuelabs/sptfy/internal/auth"
-	"github.com/cuelabs/sptfy/internal/environment"
-	"github.com/cuelabs/sptfy/pkg/track"
-	"github.com/cuelabs/sptfy/pkg/album"
-	"github.com/cuelabs/sptfy/pkg/artist"
-	"github.com/cuelabs/sptfy/pkg/user"
-	"net/http"
-	"fmt"
-	"context"
-	"io/ioutil"
-	"errors"
 	"math/rand"
+	"fmt"
 )
 
 const (

@@ -6,6 +6,7 @@ import (
 
 type SptfyUser struct {
 	DisplayName *string `json:"display_name"`
+	Email *string `json:"email"`
 	Id          *string `json:"id"`
 	Uri         *string `json:"uri"`
 	Href        url.URL `json:"href"`
