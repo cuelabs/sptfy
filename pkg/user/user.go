@@ -9,7 +9,7 @@ type SptfyUser struct {
 	Email *string `json:"email"`
 	Id          *string `json:"id"`
 	Uri         *string `json:"uri"`
-	Href        url.URL `json:"href"`
+	Href        *url.URL `json:"href"`
 }
 
 type SpotifyAPIUserResponse struct {

@@ -2,35 +2,36 @@ package environment
 
 import (
 	"github.com/cuelabs/sptfy/internal/auth"
-	"github.com/cuelabs/sptfy/pkg/album"
-	"github.com/cuelabs/sptfy/pkg/artist"
-	"github.com/cuelabs/sptfy/pkg/track"
-	"github.com/cuelabs/sptfy/pkg/user"
 	"log"
+	"github.com/cuelabs/sptfy/internal/spotifyclient"
 )
 
-type SpotifyApiOperations interface {
-	RetrieveInfo(e *Environment) (*user.SptfyUser, error)
-
-	RetrieveAuth(e *Environment) error
-
-	PlaybackNext(e *Environment) (*track.SptfyTrack, error)
-	PlaybackPlay(e *Environment) (*track.SptfyTrack, error)
-	PlaybackPause(e *Environment) (*track.SptfyTrack, error)
-
-	SearchAlbum(query string, e *Environment) ([]*album.SptfyAlbum, error)
-	SearchArtist(query string, e *Environment) ([]*artist.SptfyArtist, error)
-	SearchTrack(query string, e *Environment) ([]*track.SptfyTrack, error)
+type SptfySettings struct {
+	Set map[string]interface{}
 }
 
-type Envvars struct {
-	Version    string
-	ClientType string
+// Return false if already exists
+func (s *SptfySettings) SetSetting(k string, v interface{}) bool {
+	if s.Set[k] == nil {
+        s.Set[k] = v
+        return true
+	}
+	return false
 }
+
+func (s *SptfySettings) GetSetting(k string) (interface{}, bool) {
+    if s.Set[k] == nil {
+    	return nil, false
+	}
+    return s.Set[k], true
+}
+
+type Envvars struct {}
 
 type Environment struct {
 	Auth   *auth.Authentication
 	Vars   *Envvars
 	Log    *log.Logger
-	Client SpotifyApiOperations
+	Client spotifyclient.SpotifyApiOperations
+	Settings *SptfySettings
 }

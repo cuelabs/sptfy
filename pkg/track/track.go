@@ -4,6 +4,7 @@ import (
 	"github.com/cuelabs/sptfy/pkg/album"
 	"github.com/cuelabs/sptfy/pkg/artist"
 	"net/url"
+	"github.com/cuelabs/sptfy/internal/spotifyclient"
 )
 
 type SptfyTrack struct {
@@ -39,4 +40,18 @@ type SpotifyAPITrackSearchResponse struct {
 		// Previous int `json:"previous"` // Same here
 		Total int `json:"total"`
 	} `json:"tracks"`
+}
+
+type SptfyCLITrackDisplayResponse struct {
+	ResponseHead string
+	MessageFormat string
+	Results []*SptfyCLITrackDisplayItem
+}
+
+type SptfyCLITrackDisplayItem struct {
+	Tag *spotifyclient.SptfyTag
+	TrackName *string
+	Artists []*string
+	AlbumName *string
+	//Duration *time.Duration add in v0.3+
 }

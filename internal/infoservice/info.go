@@ -1,6 +1,7 @@
 package infoserver
 
-type SptfyUserInfoView struct {
-Tag
+import "github.com/cuelabs/sptfy/internal/spotifyclient"
 
+type SptfyUserInfoView struct {
+Tag spotifyclient.SptfyTag
 }

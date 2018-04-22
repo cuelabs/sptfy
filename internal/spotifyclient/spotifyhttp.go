@@ -31,12 +31,12 @@ func (s *SpotifyHttpClient) RetrieveInfo(e *environment.Environment) (*user.Sptf
 		return nil, err
 	}
 	client := conf.Client(context.Background(), token)
-	u := &url.URL{
+	urlChk := &url.URL{
 		Scheme: "https",
 		Host: "api.spotify.com",
 		Path: "/v1/me",
 	}
-	req, err := http.NewRequest("GET", u.String(), nil)
+	req, err := http.NewRequest("GET", urlChk.String(), nil)
 	if err != nil {
 		e.Log.Println("Unable to create a new request in RetrieveInfo()")
 		return nil, err
@@ -45,35 +45,54 @@ func (s *SpotifyHttpClient) RetrieveInfo(e *environment.Environment) (*user.Sptf
 	if err != nil {
 		e.Log.Println("Request failed in RetrieveInfo()")
 	}
-	b, err := ioutil.ReadAll(resp.Body)
-	// marshall data response to
-
-
-	fmt.Printf("This is the response: %v", b)
-
-	return nil, errors.New("Not implemented")
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		e.Log.Println("Unable to read response body in RetrieveInfo()")
+		return nil, err
+	}
+	// Marsall Spotify API response usable format
+	var u user.SpotifyAPIUserResponse
+	if err := json.Unmarshal(body, &u); err != nil {
+		e.Log.Println("Unable to unmarashal response body to user.SpotifyAPIUserResponse type in RetrieveInfo()")
+       return nil, err
+	}
+    href, err := url.Parse(u.Href)
+    if err != nil {
+    	e.Log.Println("Unable to parse 'href' in response to a valid URL in RetrieveInfo()")
+	return nil, err
+    	}
+	return &user.SptfyUser{
+		DisplayName: &u.DisplayName,
+		Email: &u.Email,
+		Id: &u.Id,
+		Uri: &u.Uri,
+		Href: href,
+	}, nil
 }
 
 func (s *SpotifyHttpClient) RetrieveAuth(e *environment.Environment) error {
 	if e.Auth == nil {
-		e.Log.Println("Authorization not found. Beginning authentication.")
-		a := &auth.Authentication{SPTFY_CACHE_PATH, nil}
+		e.Log.Println("Auth not found. Beginning authentication.")
+		a := &auth.Authentication{"~/.sptfy/token.json", nil}
 		fmt.Print("Please authenticate")
 		a.Authenticate()
 		e.Log.Println("Authentication complete.")
 		fmt.Println("Thank you for authenticating.")
 		e.Auth = a
 	}
-	// Ensure access token exists and is active
-	u, err := e.Client.RetrieveInfo(e)
+	// Ensure access token exists and is active, nil}
+	fmt.Print("Please authenticate")
+	/*
+u, err := e.Client
 	if err != nil {
          e.Log.Println(("Unable to retrieve a user in RetrieveAuth()"))
          return err
 	}
+	*/
 	// Display some authorization content
-	e.Log.Println("RetrieveAuth() successful. Displaying auth info for user ", u.Id)
-	fmt.Println("Display Name: ", u.DisplayName)
-	fmt.Println("Email Address: ", u.Email)
+	e.Log.Println("RetrieveAuth() successful. Displaying auth info for user ", "fake ID") //u.Id
+	fmt.Println("Display Name: ", "Placehold") // u.DisplayName
+	fmt.Println("Email Address: ", "Placeholder 2") // u.Email
 	fmt.Print("\nSuccessfully authoirzed!\n\n")
 	return nil
 }
