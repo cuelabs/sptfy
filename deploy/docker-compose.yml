@@ -1,23 +1,24 @@
 version: '3.5'
 services:
   openresty:
-    build:
-      context: openresty
-      dockerfile: Dockerfile-simple
-    container_name: openresty_0
+    container_name: openresty
+    build: openresty
     ports:
       - 80:80
   auth:
     build: auth
-    container_name: auth_0
-    ports:
-      - 4180:4180
+    container_name: auth
+    expose:
+      - 4180
   srvsptfy:
-    build:
-      context: srvsptfy
-      dockerfile: Dockerfile-simple
-    container_name: srvsptfy_0
-    ports:
-      - 9090:9090
+    build: srvsptfy
+    container_name: srvsptfy
+    expose:
+      - 10101
+  cuesite:
+    build: cuesite
+    container_name: cuesite
+    expose:
+      - 10001
 volumes:
   pgdata:

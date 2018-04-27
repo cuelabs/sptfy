@@ -1,1 +1,4 @@
 .*
+deploy/docker-compose.yml
+deploy/cuesite/static
+static/
