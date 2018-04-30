@@ -3,8 +3,8 @@ RUN apk add --no-cache git ca-certificates
 RUN go get -u github.com/bitly/oauth2_proxy
 #ENV OAUTH2_PROXY_CLIENT_ID
 #ENV OAUTH2_PROXY_CLIENT_SECRET
-ENTRYPOINT oauth2_proxy  --upstream="http://srvsptfy:10001/" \
-                         --provider=github \
+ENTRYPOINT oauth2_proxy  --upstream="http://cue:10000/" \
+                         --provider=spotify \
                          --login-url=https://accounts.spotify.com/authorize \
                          --http-address="http://0.0.0.0:4180" \
                          --email-domain=* \

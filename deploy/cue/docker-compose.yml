@@ -1,0 +1,32 @@
+version: '3.5'
+services:
+  openresty:
+    build: openresty
+    container_name: openresty
+    ports:
+      - 8080:80
+  auth:
+    build: auth
+    container_name: auth
+    expose:
+      - 4180
+  cue:
+    build: cue
+    container_name: cue
+    expose:
+      - 10000
+  postgres:
+    build: postgres
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=this-is-a-password
+      - POSTGRES_DB=cuedb
+      - DEV=true
+      - TEST=false
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
