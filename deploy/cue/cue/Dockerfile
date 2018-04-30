@@ -9,7 +9,10 @@ RUN go get github.com/kelseyhightower/envconfig \
            github.com/lib/pq \
            github.com/jmoiron/sqlx \
            github.com/GeertJohan/go.rice \
-           github.com/GeertJohan/go.rice/rice
+           github.com/GeertJohan/go.rice/rice \
+           github.com/llater/cue/models \
+           github.com/llater/cue/app \
+           github.com/llater/cue/environment
 RUN rice embed-go
 RUN go build -v -o cue
 FROM alpine:3.7
