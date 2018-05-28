@@ -4,7 +4,6 @@ import (
 	"github.com/cuelabs/sptfy/pkg/album"
 	"github.com/cuelabs/sptfy/pkg/artist"
 	"net/url"
-	"github.com/cuelabs/sptfy/internal/spotifyclient"
 )
 
 type SptfyTrack struct {
@@ -49,7 +48,6 @@ type SptfyCLITrackDisplayResponse struct {
 }
 
 type SptfyCLITrackDisplayItem struct {
-	Tag *spotifyclient.SptfyTag
 	TrackName *string
 	Artists []*string
 	AlbumName *string
