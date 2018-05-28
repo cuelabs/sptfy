@@ -2,7 +2,6 @@ package album
 
 import (
 	"net/url"
-	"github.com/cuelabs/sptfy/internal/spotifyclient"
 	"github.com/cuelabs/sptfy/pkg/artist"
 )
 
@@ -40,16 +39,4 @@ type SpotifyAPIAlbumResponse struct {
 		// Previous int `json:"previous"` // Same here
 		Total int `json:"total"`
 	} `json:"albums"`
-}
-
-type SptfyCLIAlbumDisplayResponse struct {
-	ResponseHead string
-    MessageFormat string
-    Results []*SptfyCLIAlbumDisplayItem
-}
-
-type SptfyCLIAlbumDisplayItem struct {
-	Tag *spotifyclient.SptfyTag
-	AlbumName *string
-	ArtistName *string
 }
